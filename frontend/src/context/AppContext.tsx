@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-
 import { ethers } from "ethers";
-import { JsonRpcProvider } from "@ethersproject/providers";
 
 import Fallback from "../components/Fallback";
 
@@ -29,19 +27,9 @@ const AppContextProvider: React.FC = ({ children }) => {
 	useEffect(() => {
 		if (window.ethereum) {
 			setIsMetamaskInstalled(true);
-
-			const checkConnection = async () => {
-				const provider = new ethers.providers.Web3Provider(window.ethereum);
-				const accounts = await provider.listAccounts();
-				if (accounts !== null && accounts.length > 0) {
-					setSelectedAccount(accounts[0]);
-				}
-			};
-			if (selectedAccount.length === 0) {
-				checkConnection();
-			}
 		}
-	}, [selectedAccount.length]);
+		_initializeContract();
+	}, [selectedAccount]);
 
 	const connectWallet = async () => {
 		const [selectedAccount] = (await window.ethereum.request({
@@ -53,21 +41,26 @@ const AppContextProvider: React.FC = ({ children }) => {
 		}
 	};
 
-	// const _initializeEthers = async () => {
-	// 	const _provider = new ethers.providers.Web3Provider(window.ethereum);
-	// 	const _signer = _provider.getSigner(selectedAccount);
+	const _initializeContract = async () => {
+		let provider: any;
 
-	// 	console.log(_provider);
-	// 	console.log(_signer);
+		if (window.ethereum) {
+			provider = new ethers.providers.Web3Provider(window.ethereum);
+		} else {
+			provider = new ethers.providers.JsonRpcProvider(
+				process.env.REACT_APP_POLYGON_URL
+			);
+		}
 
-	// 	const _zinx = new ethers.Contract(
-	// 		contractAddress.Zinx,
-	// 		ZinxArtifact.abi,
-	// 		_signer._address ? _signer : _provider
-	// 	);
+		const signer = provider.getSigner(
+			selectedAccount ? selectedAccount : undefined
+		);
 
-	// 	setZinx(_zinx);
-	// };
+		const accounts = await provider.listAccounts();
+		if (accounts !== null && accounts.length > 0) {
+			setSelectedAccount(accounts[0]);
+		}
+	};
 
 	const value = {
 		isMetamaskInstalled,
