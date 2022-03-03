@@ -14,7 +14,13 @@ async function main() {
 
 function saveFrontendFiles(gemz) {
 	const fs = require("fs");
-	const contractsDir = path.join(__dirname, "..", "frontend", "contracts");
+	const contractsDir = path.join(
+		__dirname,
+		"..",
+		"frontend",
+		"src",
+		"contracts"
+	);
 
 	if (!fs.existsSync(contractsDir)) {
 		fs.mkdirSync(contractsDir);
