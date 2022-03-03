@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 import { ethers } from "ethers";
-import { JsonRpcProvider } from '@ethersproject/providers'
+import { JsonRpcProvider } from "@ethersproject/providers";
 
 import Fallback from "../components/Fallback";
 
@@ -14,17 +14,17 @@ interface IAppContext {
 	isMetamaskInstalled: boolean;
 	connectWallet: () => void;
 	selectedAccount: string;
-  }
+}
 
 const AppContext = createContext<IAppContext>({
 	isMetamaskInstalled: false,
 	connectWallet: () => {},
-	selectedAccount: '',
+	selectedAccount: "",
 });
 
 const AppContextProvider: React.FC = ({ children }) => {
 	const [isMetamaskInstalled, setIsMetamaskInstalled] = useState(false);
-	const [selectedAccount, setSelectedAccount] = useState('');
+	const [selectedAccount, setSelectedAccount] = useState("");
 
 	useEffect(() => {
 		if (window.ethereum) {
@@ -33,15 +33,15 @@ const AppContextProvider: React.FC = ({ children }) => {
 			const checkConnection = async () => {
 				const provider = new ethers.providers.Web3Provider(window.ethereum);
 				const accounts = await provider.listAccounts();
-				if (accounts != null && accounts.length > 0) {
-					setSelectedAccount(accounts[0])
-				};
-			}
-			if (selectedAccount.length == 0) {
+				if (accounts !== null && accounts.length > 0) {
+					setSelectedAccount(accounts[0]);
+				}
+			};
+			if (selectedAccount.length === 0) {
 				checkConnection();
 			}
 		}
-   }, []);
+	}, [selectedAccount.length]);
 
 	const connectWallet = async () => {
 		const [selectedAccount] = (await window.ethereum.request({
@@ -73,7 +73,7 @@ const AppContextProvider: React.FC = ({ children }) => {
 		isMetamaskInstalled,
 		connectWallet,
 		selectedAccount,
-	  };
+	};
 
 	return (
 		<AppContext.Provider value={value}>
