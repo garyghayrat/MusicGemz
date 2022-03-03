@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { ethers } from "ethers";
+import { Contract, ethers } from "ethers";
 
 import Fallback from "../components/Fallback";
+import contractAddress from "../contracts/contract-address.json";
+import gemzArtifacts from "../contracts/Gemz.json";
 
 declare global {
 	interface Window {
@@ -12,6 +14,7 @@ interface IAppContext {
 	isMetamaskInstalled: boolean;
 	connectWallet: () => void;
 	selectedAccount: string;
+	gemz?: Contract;
 }
 
 const AppContext = createContext<IAppContext>({
@@ -23,6 +26,7 @@ const AppContext = createContext<IAppContext>({
 const AppContextProvider: React.FC = ({ children }) => {
 	const [isMetamaskInstalled, setIsMetamaskInstalled] = useState(false);
 	const [selectedAccount, setSelectedAccount] = useState("");
+	const [gemz, setGemz] = useState<Contract>();
 
 	useEffect(() => {
 		if (window.ethereum) {
@@ -56,11 +60,22 @@ const AppContextProvider: React.FC = ({ children }) => {
 			selectedAccount ? selectedAccount : undefined
 		);
 
+		// get gemz contract instance
+		const gemzContract = new ethers.Contract(
+			contractAddress.Gemz,
+			gemzArtifacts.abi,
+			signer._address ? signer : provider
+		);
+
+		setGemz(gemzContract);
+
 		const accounts = await provider.listAccounts();
 		if (accounts !== null && accounts.length > 0) {
 			setSelectedAccount(accounts[0]);
 		}
 	};
+
+	console.log(gemz);
 
 	const value = {
 		isMetamaskInstalled,
