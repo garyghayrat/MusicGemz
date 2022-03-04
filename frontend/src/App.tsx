@@ -1,10 +1,14 @@
 import React from "react";
-import { Button } from "./components/Button"
+import { ButtonConnectWallet } from "./components/ButtonConnectWallet"
+import { ButtonUploadImage } from "./components/ButtonUploadImage"
+import { ButtonUploadSong } from "./components/ButtonUploadSong"
 
 function App() {
 	return (
 	<div className="App">
-		<Button></Button>
+		<ButtonConnectWallet />
+		<ButtonUploadImage />
+		<ButtonUploadSong />
 	</div>
 	);
 }
