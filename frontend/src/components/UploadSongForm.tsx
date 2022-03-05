@@ -1,9 +1,11 @@
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 
-import { ButtonUploadSong } from "./ButtonUploadSong";
-import { ButtonUploadImage } from "./ButtonUploadImage";
+// import { ButtonUploadSong } from "./ButtonUploadSong";
+// import { ButtonUploadImage } from "./ButtonUploadImage";
 import React from "react";
+import useWeb3Storage from "../hooks/useWeb3Storage";
+import { useAppContext } from "../context/AppContext";
 
 const IMAGE_SUPPORTED_FORMATS = [
 	"image/jpg",
@@ -43,24 +45,48 @@ interface IValues {
 	artistName: string;
 	songTitle: string;
 	genre: string;
-	coverImage: File | string | null;
-	song: File | string | null;
+	coverImage: File | null;
+	song: File | null;
 }
 
 const initialValues: IValues = {
 	artistName: "",
 	songTitle: "",
 	genre: "",
-	coverImage: "",
-	song: "",
+	coverImage: null,
+	song: null,
 };
 
 const UploadSongForm = () => {
 	const [selectedSong, setSelectedSong] = React.useState<File>();
 	const [selectedImage, setSelectedImage] = React.useState<File>();
 
-	const onSubmit = (values: IValues) => {
-		console.log(values);
+	const { gemz } = useAppContext();
+	const { uploadFiles, getFiles } = useWeb3Storage();
+
+	const onSubmit = async (values: IValues) => {
+		// upload files and get the cid
+		if (values.coverImage && values.song) {
+			const cid = await uploadFiles([values.coverImage, values.song]);
+
+			// getting uploaded files using the cid
+			const files = await getFiles(cid);
+			if (files && files?.length) {
+				const [image, song] = files;
+
+				// if files are there send the data to the blockchain
+				console.log("giving data to the blockchain");
+				if (gemz) {
+					const response = await gemz.uploadFile(
+						song.cid,
+						image.cid,
+						values.songTitle,
+						values.artistName,
+						values.genre
+					);
+				}
+			}
+		}
 	};
 
 	function playSong() {
@@ -79,7 +105,7 @@ const UploadSongForm = () => {
 				validationSchema={validationSchema}
 				onSubmit={onSubmit}
 			>
-				{({ setFieldValue }) => (
+				{({ isSubmitting, setFieldValue }) => (
 					<Form>
 						<div>
 							<label htmlFor="name">Artist Name</label>
@@ -151,7 +177,9 @@ const UploadSongForm = () => {
 							<ButtonUploadSong /> */}
 						</div>
 
-						<button type="submit">Submit</button>
+						<button disabled={isSubmitting} type="submit">
+							Submit
+						</button>
 					</Form>
 				)}
 			</Formik>

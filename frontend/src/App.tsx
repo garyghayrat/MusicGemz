@@ -14,6 +14,8 @@ function App() {
 			<div style={{ marginTop: "10rem" }}>
 				<UploadSongForm />
 			</div>
+
+			<div style={{ marginTop: "10rem" }}></div>
 		</div>
 	);
 }

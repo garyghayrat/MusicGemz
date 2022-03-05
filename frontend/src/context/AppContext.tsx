@@ -29,6 +29,17 @@ const AppContextProvider: React.FC = ({ children }) => {
 	const [gemz, setGemz] = useState<Contract>();
 
 	useEffect(() => {
+		const getData = async () => {
+			if (gemz) {
+				const data = await gemz.owner();
+				console.log(data);
+			}
+		};
+
+		getData();
+	}, [gemz]);
+
+	useEffect(() => {
 		if (window.ethereum) {
 			setIsMetamaskInstalled(true);
 		}
@@ -44,6 +55,8 @@ const AppContextProvider: React.FC = ({ children }) => {
 			setSelectedAccount(selectedAccount);
 		}
 	};
+
+	console.log(gemz);
 
 	const _initializeContract = async () => {
 		let provider: any;
@@ -74,8 +87,6 @@ const AppContextProvider: React.FC = ({ children }) => {
 			setSelectedAccount(accounts[0]);
 		}
 	};
-
-	console.log(gemz);
 
 	const value = {
 		isMetamaskInstalled,
