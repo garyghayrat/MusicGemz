@@ -1,65 +1,85 @@
-
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 import "hardhat/console.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Gemz {
-  uint public photoCount = 0;
+contract Gemz is Ownable {
 
-  constructor() {
-    
-  }
+  uint public fileCount;
   
-  struct Photo {
-    string photoHash;
-    string authorName;
-    address payable author;
-    string description;
-    uint totalDonation;
+
+  constructor() Ownable() {
+    fileCount = 0;
   }
 
-  event Donate (
-    address receiver,
-    uint amount,
-    address donator
-  );
-
-  mapping(uint => Photo) public photos;
-
-  function uploadPhoto(string memory photoHash, string memory authorName, string memory description) public {
-    require(bytes(photoHash).length > 0, "Photo hash is not valid");
-
-    // adding photo to the key
-    photos[photoCount+1] = Photo({
-      photoHash: photoHash,
-      authorName: authorName,
-      author: payable(msg.sender),
-      description: description,
-      totalDonation: 0
-    });
-
-    // increasing the photoCount
-    photoCount++;
+  enum Liked {Yes, No}
+  
+  struct File {
+    uint fileID;
+    string fileHash;
+    string coverHash;
+    string fileName;
+    string artistName;
+    address payable artistAddr;
+    string genre;
+    address[] donors;
+    mapping(address => Liked) liked;
+    uint likesCount;
   }
 
-  function donate(uint id, uint amount) public payable {
-    // Throwing an  error is balance is not sufficient
-    require(msg.sender.balance > amount, "Insufficient Balance");
-    
-    // getting the photo data from the `photos` mapping
-    address payable receiver = photos[id].author;
+  event Uploaded (address _artist, string _fileHash, uint _fileID);
+  event Donate (address _artistAddr, uint _amount, address _donorAddr);
 
-    // throwing an error if user is trying to send money to himself
-    require(msg.sender != receiver, "You cannot donate to yourself");
+  File[] public files;
+  // mapping(address => uint) public balances;
 
+  function uploadFile(
+    string memory _fileHash,
+    string memory _coverHash, 
+    string memory _fileName, 
+    string memory _artistName, 
+    string memory _genre) public {
 
-    // updating donated amount
-    photos[id].totalDonation += msg.value;
+    require(bytes(_fileHash).length > 0, "File hash is not valid");
 
-    console.log("Donating %s amount to %s", msg.value, receiver);
+    File storage file = files.push();
 
-    // emitting donate event
-    emit Donate(receiver, msg.value, msg.sender);
+    file.fileID = fileCount+1;
+    file.fileHash = _fileHash;
+    file.coverHash = _coverHash;
+    file.fileName = _fileName;
+    file.artistName = _artistName;
+    file.genre = _genre;
+    file.donors.push(msg.sender);
+    file.liked[msg.sender] = Liked.Yes;
+
+    fileCount++;
+
+    emit Uploaded(msg.sender, _fileHash, file.fileID);
   }
+
+  function donate(uint id) public payable {
+    require(msg.value > 0);
+    address payable artist = files[id].artistAddr;
+    require(msg.sender != artist, "You cannot donate to yourself");
+
+    (bool sent, ) = artist.call{value: msg.value}("");
+    require(sent, "failed to send Ether");
+
+    // balances[artist] += msg.value;
+    files[id].likesCount++;
+
+    emit Donate(artist, msg.value, msg.sender);
+  }
+
+  // function withdraw() public payable {
+  //   uint balance = balances[msg.sender];
+  //   require(balance > 0);
+  //   balances[msg.sender] = 0;
+
+  //   (bool sent, ) = msg.sender.call{value: balance}("");
+  //   require(sent, "failed to send Ether");
+  // }
+
 }

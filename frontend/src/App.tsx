@@ -1,12 +1,20 @@
 import React from "react";
-import { Button } from "./components/ui/atoms/Button";
 import { Header } from "./components/ui/layout/Header";
+
+import { ButtonConnectWallet } from "./components/ButtonConnectWallet";
+import UploadSongForm from "./components/UploadSongForm";
 
 function App() {
 	return (
-		<>
+		<div className="App">
 			<Header />
-		</>
+			<ButtonConnectWallet />
+
+			{/* FORM */}
+			<div style={{ marginTop: "10rem" }}>
+				<UploadSongForm />
+			</div>
+		</div>
 	);
 }
 
