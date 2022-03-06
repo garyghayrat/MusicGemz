@@ -1,11 +1,19 @@
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { Button } from "./ui/atoms/Button";
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import Slide from '@mui/material/Slide';
-import { TransitionProps } from '@mui/material/transitions';
+// import { Button } from "./ui/atoms/Button";
+import {
+	DialogTitle,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	Typography,
+	Button,
+	Stack,
+	Box,
+} from "@mui/material";
+import { TextField } from "formik-mui";
+import Slide from "@mui/material/Slide";
+import { TransitionProps } from "@mui/material/transitions";
 
 // import { ButtonUploadSong } from "./ButtonUploadSong";
 // import { ButtonUploadImage } from "./ButtonUploadImage";
@@ -14,11 +22,11 @@ import useWeb3Storage from "../hooks/useWeb3Storage";
 import { useAppContext } from "../context/AppContext";
 
 const Transition = React.forwardRef(function Transition(
-	props: TransitionProps & { children: React.ReactElement<any, any>; }, 
-	ref: React.Ref<unknown>,
-	) {
-		return <Slide direction="up" ref={ref} {...props} />;
-	});
+	props: TransitionProps & { children: React.ReactElement<any, any> },
+	ref: React.Ref<unknown>
+) {
+	return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const IMAGE_SUPPORTED_FORMATS = [
 	"image/jpg",
@@ -75,7 +83,6 @@ const UploadSongForm = () => {
 	const [selectedImage, setSelectedImage] = React.useState<File>();
 	const [open, setOpen] = React.useState(false);
 
-
 	const { gemz } = useAppContext();
 	const { uploadFiles, getFiles } = useWeb3Storage();
 
@@ -99,6 +106,8 @@ const UploadSongForm = () => {
 						values.artistName,
 						values.genre
 					);
+
+					console.log("response", response);
 				}
 			}
 		}
@@ -114,128 +123,144 @@ const UploadSongForm = () => {
 	}
 
 	const handleClickOpen = () => {
-        setOpen(true);
-    };
+		setOpen(true);
+	};
 
-    const uploadNewSong = () => {
-		//TODO: Sid how can I submit the form here? I don't know the details of formik
-		//The "Submit" button and onSubmit function may need to go here
-        handleClose();
-    }
-
-    const handleClose = () => {
-        setOpen(false);
-    };
+	const handleClose = () => {
+		setOpen(false);
+	};
 
 	return (
 		<div>
-            <Button
-                onClick={handleClickOpen}
-                title="Upload Song"
-                buttonClass="btn-primary"
-                fontWeight="500"
-                fontSize="1.318rem"
-            />
-            <Dialog
-                open={open}
-                TransitionComponent={Transition}
-                keepMounted
-                onClose={handleClose}
-                aria-describedby="alert-dialog-slide-description"
-            >
-                <p style={{fontSize: "25px", fontWeight: "500", paddingTop:"10px", display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center"}}>Upload your song here</p>
-                <DialogContent>
-					<div style={{margin:"0 auto"}}>
-						<Formik
-							initialValues={initialValues}
-							validationSchema={validationSchema}
-							onSubmit={onSubmit}
-						>
-							{({ isSubmitting, setFieldValue }) => (
-								<Form>
-									<div>
-										<label htmlFor="name">Artist Name</label>
-										<Field
-											name="artistName"
-											type="text"
-											id="name"
-											placeholder="Artist Name"
-										/>
-									</div>
+			<Button onClick={handleClickOpen} variant="contained">
+				Upload song
+			</Button>
+			<Dialog
+				open={open}
+				TransitionComponent={Transition}
+				onClose={handleClose}
+				maxWidth="lg"
+				aria-describedby="upload-song-dialog"
+			>
+				{/* <p
+					style={{
+						fontSize: "25px",
+						fontWeight: "500",
+						paddingTop: "10px",
+						display: "flex",
+						flexDirection: "row",
+						justifyContent: "center",
+						alignItems: "center",
+					}}
+				>
+					Upload your song here
+				</p> */}
+				<DialogTitle sx={{ fontSize: "1.6rem" }}>
+					Upload your song here
+				</DialogTitle>
 
-									<div>
-										<label htmlFor="song-title">Song Title</label>
-										<Field
-											name="songTitle"
-											type="text"
-											id="song-title"
-											placeholder="Song Title"
-										/>
-									</div>
+				<DialogContent sx={{ p: 3, mt: 2 }}>
+					<Formik
+						initialValues={initialValues}
+						validationSchema={validationSchema}
+						onSubmit={onSubmit}
+					>
+						{({ isSubmitting, setFieldValue }) => (
+							<Stack component={Form} spacing={3} my={2}>
+								<Stack direction="row" spacing={2}>
+									<Field
+										component={TextField}
+										fullWidth
+										required
+										name="songTitle"
+										type="text"
+										id="song-title"
+										label="Song Title"
+									/>
 
-									<div>
-										<label htmlFor="genre">Genre</label>
-										<Field name="genre" type="text" id="genre" placeholder="Genre" />
-									</div>
+									<Field
+										component={TextField}
+										fullWidth
+										required
+										variant="outlined"
+										name="artistName"
+										type="text"
+										id="name"
+										label="Artist Name"
+									/>
+								</Stack>
 
-									<div>
-										<label htmlFor="song">Upload Song: </label>
-										<input
-											type="file"
-											name="song"
-											id="song"
-											accept="audio/mpeg, audio/mp3"
-											onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-												if (e.target.files && e.target.files.length > 0) {
-													setSelectedSong(e.target.files[0]);
-													setFieldValue("song", e.target.files[0]);
-												}
-											}}
-										/>
-										{selectedSong && <button onClick={playSong}>play song</button>}
-									</div>
+								<Field
+									component={TextField}
+									name="genre"
+									type="text"
+									id="genre"
+									label="Genre"
+								/>
 
-									<div>
-										<label htmlFor="image">Upload cover image: </label>
-										<input
-											type="file"
-											name="coverImage"
-											id="image"
-											accept="image/jpg, image/jpeg, image/png"
-											onChange={(e) => {
-												if (e.target.files && e.target.files.length > 0) {
-													setSelectedImage(e.target.files[0]);
-													setFieldValue("coverImage", e.target.files[0]);
-												}
-											}}
-										/>
-										{selectedImage && (
+								<div>
+									<label htmlFor="song">Upload Song*: </label>
+									<input
+										type="file"
+										name="song"
+										id="song"
+										accept="audio/mpeg, audio/mp3"
+										onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+											if (e.target.files && e.target.files.length > 0) {
+												setSelectedSong(e.target.files[0]);
+												setFieldValue("song", e.target.files[0]);
+											}
+										}}
+									/>
+									{selectedSong && (
+										<button onClick={playSong}>play song</button>
+									)}
+								</div>
+
+								<div>
+									<label htmlFor="image">Upload cover image*: </label>
+									<input
+										type="file"
+										name="coverImage"
+										id="image"
+										accept="image/jpg, image/jpeg, image/png"
+										onChange={(e) => {
+											if (e.target.files && e.target.files.length > 0) {
+												setSelectedImage(e.target.files[0]);
+												setFieldValue("coverImage", e.target.files[0]);
+											}
+										}}
+									/>
+									{selectedImage && (
+										<Box>
 											<img
 												src={URL.createObjectURL(selectedImage)}
-												style={{ width: "15vw", height: "15vh" }}
+												style={{ width: "100%", height: "100%" }}
 												alt="Thumb"
 											/>
-										)}
-									</div>
-									<button disabled={isSubmitting} type="submit" style={{textAlign: "center"}}>
-										Submit
-									</button>
-								</Form>
-							)}
-						</Formik>
-					</div>
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        onClick={uploadNewSong}
-                        title="Upload Song"
-                        buttonClass="btn-primary"
-                        fontWeight="500"
-                        fontSize="1.318rem"
-                    />
-                </DialogActions>
-            </Dialog>
-        </div>
+										</Box>
+									)}
+								</div>
+								<Button
+									disabled={isSubmitting}
+									type="submit"
+									variant="contained"
+									fullWidth
+								>
+									Submit
+								</Button>
+							</Stack>
+						)}
+					</Formik>
+					{/* </div> */}
+				</DialogContent>
+				<DialogActions>
+					<Button variant="contained" color="warning" onClick={handleClose}>
+						Close
+					</Button>
+				</DialogActions>
+			</Dialog>
+		</div>
 	);
 };
 

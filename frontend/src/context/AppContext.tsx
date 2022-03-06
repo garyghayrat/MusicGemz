@@ -56,7 +56,17 @@ const AppContextProvider: React.FC = ({ children }) => {
 		}
 	};
 
-	console.log(gemz);
+	useEffect(() => {
+		const getFile = async () => {
+			if (gemz) {
+				const file = await gemz.files(0);
+				console.log(file);
+				console.log(file.fileID.toString());
+			}
+		};
+
+		getFile();
+	}, [gemz]);
 
 	const _initializeContract = async () => {
 		let provider: any;
@@ -89,6 +99,7 @@ const AppContextProvider: React.FC = ({ children }) => {
 	};
 
 	const value = {
+		gemz,
 		isMetamaskInstalled,
 		connectWallet,
 		selectedAccount,
