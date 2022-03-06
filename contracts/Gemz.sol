@@ -50,6 +50,7 @@ contract Gemz is Ownable {
     file.coverHash = _coverHash;
     file.fileName = _fileName;
     file.artistName = _artistName;
+    file.artistAddr = payable(msg.sender);
     file.genre = _genre;
     file.donors.push(msg.sender);
     file.liked[msg.sender] = Liked.Yes;
