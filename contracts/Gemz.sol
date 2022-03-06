@@ -69,6 +69,8 @@ contract Gemz is Ownable {
 
     // balances[artist] += msg.value;
     files[id].likesCount++;
+    files[id].liked[msg.sender] = Liked.Yes;
+    files[id].donors.push(msg.sender);
 
     emit Donate(artist, msg.value, msg.sender);
   }
