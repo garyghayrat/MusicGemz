@@ -1,17 +1,17 @@
-.menu__header{
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 4.9rem;
-  padding: 2.8rem 2.7rem;
-  border-bottom: 0.9rem solid #e5e5e5;
+.menu__header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 4.9rem;
+	padding: 2rem 4rem;
+	border-bottom: 1px solid #e5e5e5;
 }
 
 .menu__header nav > ul {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 4.697rem;
-  font-size: 1.3rem;
-  font-weight: 500;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 4.697rem;
+	font-size: 1.3rem;
+	font-weight: 500;
 }

@@ -1,6 +1,6 @@
 body {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 // code {
@@ -8,19 +8,19 @@ body {
 //     monospace;
 // }
 
-@import './variables';
-@import './resets';
+@import "./variables";
+// @import './resets';
 
 // Atoms
-@import './atoms/Button';
+@import "./atoms/Button";
 
 // Molecules
 
 // Organisms
 
 // Layout
-@import './layout/Header';
-@import './layout/HeaderNotification';
+@import "./layout/Header";
+@import "./layout/HeaderNotification";
 
 // Templates
 
