@@ -30,16 +30,16 @@ export default function CallToAction() {
                     align="center"
                     gutterBottom
                 >
-                Music Gemz
+                    Music Gemz
                 </Typography>
                 <Typography variant="h4" align="center" paragraph>
                     Discover and share music. <br/> Tip artists directly in ethers.
                 </Typography>
                 <Stack
-                sx={{ pt: 4 }}
-                direction="row"
-                spacing={2}
-                justifyContent="center"
+                    sx={{ pt: 4 }}
+                    direction="row"
+                    spacing={2}
+                    justifyContent="center"
                 >
                 <UploadSongModal />
                 <Button
