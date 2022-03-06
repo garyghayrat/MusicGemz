@@ -9,7 +9,7 @@ export default function Footer() {
 				Thanks for using Music Gemz!
 			</Typography>
 			<Typography variant="subtitle1" align="center" component="p">
-				Made with love by Gary, Sid, Grant &#38; Eydrent.
+				Made with love by Gary, Sid, &#38; Grant.
 			</Typography>
 			<img
 				src={logo}

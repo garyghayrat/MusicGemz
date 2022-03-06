@@ -15,18 +15,21 @@ interface IAppContext {
 	connectWallet: () => void;
 	selectedAccount: string;
 	gemz?: Contract;
+	allSongs: Array<any>;
 }
 
 const AppContext = createContext<IAppContext>({
 	isMetamaskInstalled: false,
 	connectWallet: () => {},
 	selectedAccount: "",
+	allSongs: [],
 });
 
 const AppContextProvider: React.FC = ({ children }) => {
 	const [isMetamaskInstalled, setIsMetamaskInstalled] = useState(false);
 	const [selectedAccount, setSelectedAccount] = useState("");
 	const [gemz, setGemz] = useState<Contract>();
+	let allSongs: any[] = [];
 
 	useEffect(() => {
 		const getData = async () => {
@@ -59,12 +62,32 @@ const AppContextProvider: React.FC = ({ children }) => {
 	useEffect(() => {
 		const getFile = async () => {
 			if (gemz) {
-				const file = await gemz.files(0);
-				console.log(file);
-				console.log(file.fileID.toString());
+				// couldn't figure out how to find the number of objects in the contract
+				// so just ecaped loop once we get out of bounds
+				let stillReading = true;
+				let i = 0;
+				while (stillReading) {
+					try {
+						const file = await gemz.files(i);
+						console.log(file);
+						const currentSong = {
+							id: file.fileID.toNumber(),
+							artistAddr: file.artistAddr,
+							artistName: file.artistName,
+							songTitle: file.fileName,
+							genre: file.genre,
+							songFile: file.coverHash,
+							coverPhoto: file.fileHash,
+						}
+						allSongs.push(currentSong);
+						i++;
+					} catch (error) {
+						stillReading = false;
+					}
+					
+				}
 			}
 		};
-
 		getFile();
 	}, [gemz]);
 
@@ -103,6 +126,7 @@ const AppContextProvider: React.FC = ({ children }) => {
 		isMetamaskInstalled,
 		connectWallet,
 		selectedAccount,
+		allSongs,
 	};
 
 	return (
