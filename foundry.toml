@@ -1,0 +1,12 @@
+[default]
+src = 'src'
+out = 'artifacts'
+libs = ['node_modules']
+remappings = [
+    '@ensdomains/=node_modules/@ensdomains/',
+    'hardhat/=node_modules/hardhat/',
+    '@openzeppelin/=node_modules/@openzeppelin/',
+    'ds-test/=lib/ds-test/',
+]
+
+# See more config options https://github.com/gakonst/foundry/tree/master/config
