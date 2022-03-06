@@ -9,22 +9,37 @@ interface buttonProps {
 	url?: string;
 	fontSize?: string;
 	fontWeight?: string;
+	style?: object;
 }
+
+//<a href={props.url ? props.url : "#"} target="_blank" rel="noreferrer">
 
 export const Button = (props: buttonProps) => {
 	return (
-		<a href={props.url ? props.url : "#"} target="_blank" rel="noreferrer">
-			<button
+		<a>
+			{props.style ? 
+				<button
+				onClick={props.onClick}
 				className={`btn ${props.buttonClass}`}
-				style={{
-					height: props.height,
-					width: props.width,
-					fontSize: props.fontSize,
-					fontWeight: props.fontWeight,
-				}}
-			>
+				style={props.style}
+				>
 				{props.title}
-			</button>
+				</button>
+			:
+				<button
+					onClick={props.onClick}
+					className={`btn ${props.buttonClass}`}
+					style={{
+						height: props.height,
+						width: props.width,
+						fontSize: props.fontSize,
+						fontWeight: props.fontWeight,
+					}}
+				>
+					{props.title}
+				</button>
+			}
+			
 		</a>
 	);
 };
