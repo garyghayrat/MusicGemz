@@ -8,12 +8,10 @@ import {
 	DialogTitle,
 	Grid,
 	IconButton,
-	Stack,
 	Typography,
 } from "@mui/material";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import GitHubIcon from "@mui/icons-material/GitHub";
-import { Box } from "@mui/system";
 
 const team: ITeamMember[] = [
 	{

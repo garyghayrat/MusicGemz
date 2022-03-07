@@ -1,9 +1,6 @@
 import React from "react";
-// import { Button } from "../atoms/Button";
-import { Button, Link, Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import { useAppContext } from "../../../context/AppContext";
-import { HeaderNotification } from "./HeaderNotification";
-import { useState } from "react";
 import { Box } from "@mui/system";
 
 import logo from "../assets/logo.png";

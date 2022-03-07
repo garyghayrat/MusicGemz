@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+	createContext,
+	useContext,
+	useState,
+	useEffect,
+	useCallback,
+} from "react";
 
 import { ethers, Contract } from "ethers";
 
@@ -45,12 +51,42 @@ const AppContextProvider: React.FC = ({ children }) => {
 		getData();
 	}, [gemz]);
 
+	const _initializeContract = useCallback(async () => {
+		let provider: any;
+
+		if (window.ethereum) {
+			provider = new ethers.providers.Web3Provider(window.ethereum);
+		} else {
+			provider = new ethers.providers.JsonRpcProvider(
+				process.env.REACT_APP_POLYGON_URL
+			);
+		}
+
+		const signer = provider.getSigner(
+			selectedAccount ? selectedAccount : undefined
+		);
+
+		// get gemz contract instance
+		const gemzContract = new ethers.Contract(
+			contractAddress.Gemz,
+			gemzArtifacts.abi,
+			signer._address ? signer : provider
+		);
+
+		setGemz(gemzContract);
+
+		const accounts = await provider.listAccounts();
+		if (accounts !== null && accounts.length > 0) {
+			setSelectedAccount(accounts[0]);
+		}
+	}, [selectedAccount]);
+
 	useEffect(() => {
 		if (window.ethereum) {
 			setIsMetamaskInstalled(true);
 		}
 		_initializeContract();
-	}, [selectedAccount]);
+	}, [selectedAccount, _initializeContract]);
 
 	const connectWallet = async () => {
 		const [selectedAccount] = (await window.ethereum.request({
@@ -66,9 +102,9 @@ const AppContextProvider: React.FC = ({ children }) => {
 		console.log("tip in contexts");
 		if (gemz) {
 			const response = await gemz.donate(1, {
-				value: ethers.utils.parseUnits("0.1", "ether"),
+				value: ethers.utils.parseUnits("0.01", "ether"),
 			});
-			console.log("response");
+			console.log(response);
 		}
 	};
 
@@ -104,36 +140,6 @@ const AppContextProvider: React.FC = ({ children }) => {
 		};
 		getFile();
 	}, [gemz]);
-
-	const _initializeContract = async () => {
-		let provider: any;
-
-		if (window.ethereum) {
-			provider = new ethers.providers.Web3Provider(window.ethereum);
-		} else {
-			provider = new ethers.providers.JsonRpcProvider(
-				process.env.REACT_APP_POLYGON_URL
-			);
-		}
-
-		const signer = provider.getSigner(
-			selectedAccount ? selectedAccount : undefined
-		);
-
-		// get gemz contract instance
-		const gemzContract = new ethers.Contract(
-			contractAddress.Gemz,
-			gemzArtifacts.abi,
-			signer._address ? signer : provider
-		);
-
-		setGemz(gemzContract);
-
-		const accounts = await provider.listAccounts();
-		if (accounts !== null && accounts.length > 0) {
-			setSelectedAccount(accounts[0]);
-		}
-	};
 
 	const value = {
 		gemz,
