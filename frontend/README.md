@@ -1,5 +1,3 @@
-# Getting Started with Create React App
-
 ## Music Gemz
 
 DApp built on the Polygon Network that allows users to upload their songs. Anyone can then come listen to your songs and tip you directly.
