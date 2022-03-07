@@ -11,8 +11,8 @@ export default function AllSongs() {
 	// allSongs here is called before the function is finished in app context
 	// change anything on this page and save and then it renders
 	useEffect(() => {
-		console.log("in allsongs")
-		
+		//console.log("in allsongs")
+		//console.log(allSongs)
 	}, [allSongs]);
 
 	return (

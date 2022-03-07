@@ -29,7 +29,7 @@ const AppContextProvider: React.FC = ({ children }) => {
 	const [isMetamaskInstalled, setIsMetamaskInstalled] = useState(false);
 	const [selectedAccount, setSelectedAccount] = useState("");
 	const [gemz, setGemz] = useState<Contract>();
-	let allSongs: any[] = [];
+	const [allSongs, setAllSongs] = useState([{}]);
 
 	useEffect(() => {
 		const getData = async () => {
@@ -61,15 +61,16 @@ const AppContextProvider: React.FC = ({ children }) => {
 
 	useEffect(() => {
 		const getFile = async () => {
+			console.log("in app context")
 			if (gemz) {
 				// couldn't figure out how to find the number of objects in the contract
 				// so just ecaped loop once we get out of bounds
 				let stillReading = true;
 				let i = 0;
+				let songTest = [];
 				while (stillReading) {
 					try {
 						const file = await gemz.files(i);
-						console.log(file);
 						const currentSong = {
 							id: file.fileID.toNumber(),
 							artistAddr: file.artistAddr,
@@ -79,12 +80,12 @@ const AppContextProvider: React.FC = ({ children }) => {
 							songFile: file.coverHash,
 							coverPhoto: file.fileHash,
 						}
-						allSongs.push(currentSong);
+						songTest.push(currentSong);
+						setAllSongs(songTest);
 						i++;
 					} catch (error) {
 						stillReading = false;
 					}
-					
 				}
 			}
 		};
