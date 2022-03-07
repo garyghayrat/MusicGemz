@@ -9,8 +9,11 @@ import Typography from "@mui/material/Typography";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from '@mui/icons-material/Pause';
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { ethers } from "ethers";
+import { useAppContext } from "../context/AppContext";
 
 interface SongProps {
+	id: string;
 	artistAddr: string;
 	artistName: string;
 	songTitle: string;
@@ -22,7 +25,8 @@ interface SongProps {
 export default function Song(props: SongProps) {
 	const [playing, setPlaying] = useState(false);
 	const audio = useRef(new Audio(`https://${props.songFile}.ipfs.dweb.link`));
-	
+	const { gemz, sendTip } = useAppContext();
+
 	function playSong() {
 		setPlaying(!playing);
 		//play song
@@ -36,8 +40,12 @@ export default function Song(props: SongProps) {
 		}
 	}
 
-	function tip() {
-
+	const tip = async () => {
+		console.log("beginning tip");
+		if (gemz) {
+			const response = await gemz.donate(1, {value: ethers.utils.parseUnits("0.1", "ether")});
+			console.log("response");
+		}
 	}
 
 	const theme = useTheme();

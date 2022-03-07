@@ -14,6 +14,7 @@ export default function AllSongs() {
 				{allSongs.map((song) => (
 					<Grid item key={song.id} xs={12} sm={6} md={4}>
 						<Song
+						    id={song.id}
 							artistAddr={song.artistAddr}
 							artistName={song.artistName}
 							songTitle={song.songTitle}

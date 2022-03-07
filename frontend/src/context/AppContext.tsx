@@ -16,6 +16,7 @@ interface IAppContext {
 	selectedAccount: string;
 	gemz?: Contract;
 	allSongs: Array<any>;
+	sendTip: () => void;
 }
 
 const AppContext = createContext<IAppContext>({
@@ -23,6 +24,7 @@ const AppContext = createContext<IAppContext>({
 	connectWallet: () => {},
 	selectedAccount: "",
 	allSongs: [],
+	sendTip: () => {},
 });
 
 const AppContextProvider: React.FC = ({ children }) => {
@@ -59,9 +61,16 @@ const AppContextProvider: React.FC = ({ children }) => {
 		}
 	};
 
+	const sendTip = async () => {
+		console.log("tip in contexts");
+		if (gemz) {
+			const response = await gemz.donate(1, {value: ethers.utils.parseUnits("0.1", "ether")});
+			console.log("response");
+		}
+	};
+
 	useEffect(() => {
 		const getFile = async () => {
-			console.log("in app context")
 			if (gemz) {
 				// couldn't figure out how to find the number of objects in the contract
 				// so just ecaped loop once we get out of bounds
@@ -71,6 +80,7 @@ const AppContextProvider: React.FC = ({ children }) => {
 				while (stillReading) {
 					try {
 						const file = await gemz.files(i);
+						console.log(file)
 						const currentSong = {
 							id: file.fileID.toNumber(),
 							artistAddr: file.artistAddr,
@@ -128,6 +138,7 @@ const AppContextProvider: React.FC = ({ children }) => {
 		connectWallet,
 		selectedAccount,
 		allSongs,
+		sendTip,
 	};
 
 	return (
