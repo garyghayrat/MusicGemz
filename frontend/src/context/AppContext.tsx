@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Contract, ethers } from "ethers";
+
+import { ethers, Contract } from "ethers";
 
 import Fallback from "../components/Fallback";
 import contractAddress from "../contracts/contract-address.json";
@@ -64,7 +65,9 @@ const AppContextProvider: React.FC = ({ children }) => {
 	const sendTip = async () => {
 		console.log("tip in contexts");
 		if (gemz) {
-			const response = await gemz.donate(1, {value: ethers.utils.parseUnits("0.1", "ether")});
+			const response = await gemz.donate(1, {
+				value: ethers.utils.parseUnits("0.1", "ether"),
+			});
 			console.log("response");
 		}
 	};
@@ -80,7 +83,7 @@ const AppContextProvider: React.FC = ({ children }) => {
 				while (stillReading) {
 					try {
 						const file = await gemz.files(i);
-						console.log(file)
+						console.log(file);
 						const currentSong = {
 							id: file.fileID.toNumber(),
 							artistAddr: file.artistAddr,
@@ -89,7 +92,7 @@ const AppContextProvider: React.FC = ({ children }) => {
 							genre: file.genre,
 							songFile: file.coverHash,
 							coverPhoto: file.fileHash,
-						}
+						};
 						songTest.push(currentSong);
 						setAllSongs(songTest);
 						i++;
