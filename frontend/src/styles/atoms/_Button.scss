@@ -1,0 +1,21 @@
+.btn {
+  color: $white;
+  padding: 0 2rem;
+  border: none;
+  border-radius: 1.8rem;
+  background-color: $primary;
+  height: 3.5rem;
+  font-weight: 600;
+  align-items: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-primary {
+  background-color: $primary;
+  color: $white;
+
+  &:hover {
+    background-color: $white;
+    color: $primary;
+  }
+}
