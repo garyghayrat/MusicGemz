@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 import { ethers } from "ethers";
-import { JsonRpcProvider } from "@ethersproject/providers";
 
 import Fallback from "../components/Fallback";
 
