@@ -50,7 +50,9 @@ export default function Song(props: SongProps) {
 
 	const theme = useTheme();
 	return (
-		<Card sx={{ display: "flex" }}>
+		<div>
+		{props.artistAddr ? 
+			<Card sx={{ display: "flex" }}>
 			<Box sx={{ display: "flex", flexDirection: "column" }}>
 				<CardContent sx={{ flex: "1 0 auto" }}>
 					<Typography component="div" variant="h5">
@@ -83,5 +85,9 @@ export default function Song(props: SongProps) {
 				alt="Song Cover"
 			/>
 		</Card>
+		: <div></div>
+		}
+		</div>
+		
 	);
 }
