@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
 import Card from "@mui/material/Card";
@@ -21,31 +21,18 @@ interface SongProps {
 
 export default function Song(props: SongProps) {
 	const [playing, setPlaying] = useState(false);
-	const [songFile, setSongFile] = useState<Blob>();
-
-	useEffect(() => {
-		const getBlob = async () => {
-			let blob = await fetch(`https://${props.songFile}.ipfs.dweb.link`).then(r => r.blob());
-			setSongFile(blob);
-		};
-		getBlob();
-	}, [props.songFile]);
-
+	const audio = useRef(new Audio(`https://${props.songFile}.ipfs.dweb.link`));
 	
 	function playSong() {
 		setPlaying(!playing);
-		if (songFile) {
-			let audio = new Audio(URL.createObjectURL(songFile));
-			//play song
-			if (!playing) {
-				console.log("play");
-				audio.play();
-			}
-			// pause song
-			else {
-				audio.pause();
-				console.log("pause");
-			}
+		//play song
+		if (!playing) {
+			console.log("play");
+			audio.current.play();
+		}
+		// pause song
+		else {
+			audio.current.pause();
 		}
 	}
 

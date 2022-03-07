@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Song from "../components/Song";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
@@ -7,13 +7,6 @@ import { useAppContext } from "../context/AppContext";
 // Grid to display uploaded songs from
 export default function AllSongs() {
 	const { allSongs } = useAppContext();
-	
-	// allSongs here is called before the function is finished in app context
-	// change anything on this page and save and then it renders
-	useEffect(() => {
-		//console.log("in allsongs")
-		//console.log(allSongs)
-	}, [allSongs]);
 
 	return (
 		<Container sx={{ py: 8 }} maxWidth="md">
